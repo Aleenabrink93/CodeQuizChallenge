@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>Code Quiz</title>
+        <link rel="stylesheet" href="./Assets/css/style.css">
+    </head>
+    <body>
+        <header>
+            <h3 id="view-high-score">View High Score</h3>
+            <h3 class="timer"> Time: <span id="timer"></span></h3>
+        </header>
+        <main>
+            <div id="start-page" class="show">
+                <section class="start box">
+                    <h1>Welcome to Code Quiz</h1>
+                    <p>Answer the following questions by the time limit. Keep in mind that incorrect answer will subtract your time by 10 seconds.</p>
+                    <button class="button" id="start-button">Start</button>
+                </section>
+            </div>
+            <div id="question-page" class="hide">
+                <section class="question box">
+                    <section id="questions"></section>
+                    <section id="choices" class="botton-list"></section>
+                </section>
+            </div>
+            <div id="finish-page" class="hide">
+                <section class="finish box">
+                    <section id="score-banner">
+                        <h1>All done!</h1>
+                    </section>
+                    <form id="savescore" class="info">
+                        <p> Enter Initial:
+                            <input type="text" name="initials" id="initials" class="text-input"/>
+                            <button class="button" id="submit"> Submit</button>
+                        </p>
+                    </form>
+                </section>
+            </div>
+            <div id="high-score-page" class="hide">
+                <section class="high-score box">
+                    <h1 class="high-score">High Score</h1>
+                    <ol id="high-score-list" class="score-list"></ol>
+                    <button class="button" id="back">Go back</button>
+                    <button class="button" id="clear">Clear High Scores</button>
+                </section>
+            </div>
+            <section class="hide" id="correct">
+                <h2>Correct!</h2>
+            </section>
+            <section class="hide" id="wrong">
+                <h2>Wrong!</h2>
+            </section>
+        </main>
+  </body>
+    
+
+</html>
