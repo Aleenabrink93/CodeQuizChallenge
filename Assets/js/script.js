@@ -67,7 +67,7 @@ var questions = [
         {choice:"B. every()"},
         {choice:"C. filter()"},
         {choice:"D. some()"} ]
-    }]
+    },];
 
 
 // 1. Timer 
@@ -98,6 +98,7 @@ var startGame = function() {
     startPageEl.classList.remove("show");
     questionPageEl.classList.remove("hide");
     questionPageEl.classList.add("show");
+
     // b. (random questions)
     randomQuestions = questions.sort(()=> Math.random() -0.5)
     setTime()
@@ -126,15 +127,189 @@ var displayQuestion = function(index){
         choicesEl.appendChild(answerbutton);
     }
 }
-    //
-        
-// 3. Answering questions
-        // a. if the anwswer is right 
-            // you are presented with another questions
-            // score are counting
-        // b. if the answer is wrong
-            // the time is substracted from the clock
-    
-// 4. save initials and score when game is over
 
+        
+// display "correct!"
+var answerCorrect = function () {
+    if (correctEl.className="hide"){
+        correctEl.classList.remove("hide");
+        correctEl.classList.add("banner");
+        wrongEl.classList.remove("banner");
+        wrongEl.classList.add("hide");
+    }
+}
+// display "wrong!"
+var answerWrong = function () {
+    if (wrongEl.className="hide"){
+        wrongEl.classList.remove("hide");
+        wrongEl.classList.add("banner");
+        correctEl.classList.remove("banner");
+        correctEl.classList.add("hide");
+    }
+}
+
+//check answers
+var answerCheck = function(event){
+    var selectedAnswer = event.target;
+    //if answer is correct, add 2 to score
+        if (randomQuestions[questionIndex].a===selectedAnswer.innerText){
+            answerCorrect();
+            score = score + 2;
+        }
+    //if answer is wrong, minus 1 from score and 3 from timer
+        else{
+            answerWrong();
+            score = score -1;
+            timeLeft= timeLeft-3;
+        };
+
+    questionIndex++
+        if (randomQuestions.length>questionIndex+1){
+            setQuestion()
+        }
+        else{
+            gameover = "true";
+            showScore();
+        }
+}
+        
+// display score when game is finish
+
+var showScore = function(){
+    questionPageEl.classList.add("hide");
+    finishPageEl.classList.remove("hide");
+    finishPageEl.classList.add("show");
+
+    var scoreDisplay = document.createElement("p");
+    scoreDisplay.innerText = ("Your score is " + score + "!");
+    scoreBannerEl.appendChild(scoreDisplay);
+
+}
+// save initials
+var createHighScore = function(event) {
+    event.preventDefault();
+
+    if (correctEl.className="show"){
+        correctEl.classList.remove("show");
+        correctEl.classList.add("hide");
+    }
+
+    if (wrongEl.className="show"){
+        wrongEl.classList.remove("show");
+        wrongEl.classList.add("hide");
+    }
+    
+    var initials = document.querySelector('#initials').value;
+    if (!initials){
+        alert("Enter your initials!");
+        return;
+    }
+
+    saveScoreForm.reset();
+
+    var Highscore = {
+        initials: initials,
+        score: score
+    }
+
+    //push and sort scores
+    highScores.push(Highscore);
+    highScores.sort((a,b)=>{return b.score-a.score});
+     
+    while (highScoreListEl.firstChild){
+        highScoreListEl.removeChild(highScoreListEl.firstChild)
+    }
+
+    for (var i=0; i< highScores.length;i++){
+        var highscoreEL = document.createElement("li");
+        highscoreEL.className ="high-score";
+        highscoreEL.innerHTML = highScores[i].initials+"-"+highScores[i].score;
+        highScoreListEl.appendChild(highscoreEL);
+    }
+
+    saveHighScore();
+    displayHighScores();
+}
+
+var saveHighScore = function(){
+    localStorage.setItem("HighScores",JSON.stringify(highScores))
+        if (!loadedHighScores){
+            return false;
+        }
+
+        loadedHighScores = JASON.parse(loadedHighScores);
+        loadedHighScores.sort((a,b)=> {return b.score-a.score})
+
+        for (var i=0; i<loadedHighScores.length; i++){
+            var highscoresEl = document.createElement("li");
+            highscoresEl.className = "high0-score";
+            highscoresEl.innerText =loadedHighScores[i].initials + "-"+ loadedHighScores[i].score;
+            highScoreListEl.appendChild(highscoresEl);
+
+            highScores.push(loadedHighScores[i]);
+        }
+}
+// display highscore page
+var displayHighScores = function() {
+    scorePageEl.classList.remove ("hide");
+    scorePageEl.classList.add ("show");
+    gameover = "true";
+
+    if (finishPageEl.className ="show"){
+        finishPageEl.classList.remove("show");
+        finishPageEl.classList.add("hide");
+    }
+    if (startPageEl.className="show"){
+        startPageEl.classList.remove("show");
+        startPageEl.classList.add("hide");
+    }
+    if (correctEl.className="show"){
+        correctEl.classList.remove("show");
+        correctEl.classList.add("hide");
+    }
+    if (wrongEl.className="show"){
+        wrongEl.classList.remove("show");
+        wrongEl.classList.add("hide");
+    }
+}
+// clear scores on high score page
+var clearScore = function(){
+    highScores =[];
+
+    while (highScoreListEl.firstChild){
+        highScoreListEl.removeChild(highScoreListEl.firstChild);
+    }
+
+    localStorage.clear(highScores)
+}
+
+//load start page when back button is clicked
+var renderStartPage = function(){
+    scorePageEl.classList.add("hide");
+    scorePageEl.classList.remove("show");
+    startPageEl.classList.remove("hide");
+    startPageEl.classList.add("show");
+    scoreBannerEl.removeChild(scoreBannerEl.lastChild);
+    questionIndex = 0;
+    gameover="";
+    timerEl.textContent =0;
+    score= 0
+
+    if (correctEl.className="show"){
+        correctEl.classList.remove("show");
+        correctEl.classList.add("hide");
+    }
+
+    if (wrongEl.className="show"){
+        wrongEl.classList.remove("show");
+        wrongEl.classList.add("hide");
+    }
+
+}
+
+//button actions
 startBtn.addEventListener("click",startGame)
+saveScoreForm.addEventListener("submit",createHighScore);
+viewHighScoreEl.addEventListener("click",displayHighScores);
+backBtn.addEventListener("click", renderStartPage);
+clearBtn.addEventListener("click",clearScore);
