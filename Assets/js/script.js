@@ -70,12 +70,64 @@ var questions = [
     }]
 
 
+// 1. Timer 
+var setTime = function(){
+    timeLeft = 30;
 
-// 1. start button
+var timerCheck = setInterval(function(){
+    timerEl.innerText = timeLeft;
+    timeLeft--
 
-// 2. Timer 
-        //a. starts count down when button is clicked
-        //b. when the timer reach 0, print "game is over"
+    if (gameover){
+        clearInterval(timerCheck)
+    }
+
+    if (timeLeft<0) {
+        showScore()
+        timerEl.innerText=0;
+        clearInterval(timerCheck);
+    }
+
+}, 1000)
+}
+
+// 2. start quiz 
+    // a. (hide start page/show question page)
+var startGame = function() {
+    startPageEl.classList.add("hide");
+    startPageEl.classList.remove("show");
+    questionPageEl.classList.remove("hide");
+    questionPageEl.classList.add("show");
+    // b. (random questions)
+    randomQuestions = questions.sort(()=> Math.random() -0.5)
+    setTime()
+    setQuestion()
+}
+    // c. next question
+var setQuestion = function(){
+    resetAnswers()
+    displayQuestion(randomQuestions[questionIndex])
+}
+
+var resetAnswers = function() {
+    while (choicesEl.firstChild){
+        choicesEl.removeChild(choicesEl.firstChild)
+    };
+};
+
+var displayQuestion = function(index){
+    questionEl.innerText = index.q
+    for (var i=0; i<index.choices.length;i++) {
+        var answerbutton = document.createElement("button");
+        answerbutton.innerText =index.choices[i].choice;
+        answerbutton.classList.add("btn");
+        answerbutton.classList.add("answerbtn")
+        answerbutton.addEventListener("click",answerCheck);
+        choicesEl.appendChild(answerbutton);
+    }
+}
+    //
+        
 // 3. Answering questions
         // a. if the anwswer is right 
             // you are presented with another questions
@@ -84,3 +136,5 @@ var questions = [
             // the time is substracted from the clock
     
 // 4. save initials and score when game is over
+
+startBtn.addEventListener("click",startGame)
