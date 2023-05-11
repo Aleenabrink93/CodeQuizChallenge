@@ -184,21 +184,14 @@ var showScore = function(){
     scoreDisplay.innerText = ("Your score is " + score + "!");
     scoreBannerEl.appendChild(scoreDisplay);
 
+    correctEl.classList.add("hide");
+    wrongEl.classList.add("hide");
+
 }
 // save initials
 var createHighScore = function(event) {
     event.preventDefault();
 
-    if (correctEl.className="show"){
-        correctEl.classList.remove("show");
-        correctEl.classList.add("hide");
-    }
-
-    if (wrongEl.className="show"){
-        wrongEl.classList.remove("show");
-        wrongEl.classList.add("hide");
-    }
-    
     var initials = document.querySelector('#initials').value;
     if (!initials){
         alert("Enter your initials!");
